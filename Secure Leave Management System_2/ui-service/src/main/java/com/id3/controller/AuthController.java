@@ -52,19 +52,21 @@ public class AuthController {
             log.info("email : " + loginForm.getEmail());
 
             Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(86400); // 1 gün
+            cookie.setHttpOnly(true);   // prevents JavaScript access (XSS mitigation)
+            cookie.setMaxAge(86400);    // 24 hours, matching JWT expiry
+            cookie.setPath("/");
             response.addCookie(cookie);
 
+            // Token stored in HttpOnly cookie — do NOT expose in URL (prevents token leakage via logs/history)
             String role = authResponse.getRole();
             String redirectUrl;
 
             if ("EMPLOYEE".equalsIgnoreCase(role)) {
-                redirectUrl = "/ui/employee/" + userId + "?token=" + token + "&userId="+userId;
+                redirectUrl = "/ui/employee/" + userId;
             } else if ("ADMIN".equalsIgnoreCase(role)) {
-                redirectUrl = "/ui/admin/" + userId + "?token=" + token + "&userId="+userId;
+                redirectUrl = "/ui/admin/" + userId;
             } else {
-                redirectUrl = "/ui/hr/" + userId + "?token=" + token+ "&userId="+userId;
+                redirectUrl = "/ui/hr/" + userId;
             }
 
             return "redirect:" + redirectUrl;
