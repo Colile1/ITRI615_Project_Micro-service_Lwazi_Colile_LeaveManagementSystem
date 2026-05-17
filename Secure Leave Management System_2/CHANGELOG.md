@@ -1,5 +1,29 @@
 # CHANGELOG — Secure Leave Management System
 
+## [2026-05-17] — README Accuracy Pass and Security Fix
+
+### Security Fix
+- **[mail-service] application.properties** — Replaced hardcoded Gmail credentials (`akdagramazan586@gmail.com` / app password) with Spring property substitution `${MAIL_USERNAME}` / `${MAIL_PASSWORD}`. Credentials must now be supplied via environment variable or `.env` file.
+
+### README Updates (all files rewritten for accuracy)
+- **[root] README.md** — Fixed architecture diagram ports (UI: 8086, personnel: 8084, leave-request: 8085, leave-tracking: 8083, mail: 8082). Fixed service table. Updated roles (`HR_MANAGER` -> `HR`). Updated quick-start to use `start-app.ps1` and `docker compose` (V2). Fixed MySQL count (3 databases, not 2).
+- **[api-gateway] README.md** — Corrected config file reference (`application.properties` not `application.yml`). Added all 7 gateway routes with path patterns. Added Actuator endpoint table.
+- **[ui-service] README.md** — Fixed port (8086). Fixed URL paths (`/ui/auth`, `/ui/employee/{userId}` etc.). Fixed template names. Corrected auth description (JWT HttpOnly cookie, not form-based session). Updated roles. Fixed access URL.
+- **[personnel-info-service] README.md** — Fixed port (8084). Fixed database name (`personnel_info_db`). Removed incorrect H2 mention. Added validation constraint details.
+- **[leave-request-service] README.md** — Fixed port (8085). Fixed Kafka topic (`leave-request-topic`). Fixed gateway route prefix. Updated Kafka message schema to match `LeaveRequestMessage` fields.
+- **[leave-tracking-service] README.md** — Fixed Kafka topic (`leave-request-topic`). Added Quartz JDBC detail. Clarified dual-database setup (`quartz_demo` for JPA, `leave_tracking_db` for Quartz).
+- **[mail-service] README.md** — Fixed port (8082). Replaced YAML snippet with properties format. Added Gmail App Password setup instructions.
+
+### Script: start-app.ps1 Fixes
+- Added Docker PATH injection (`C:\Program Files\Docker\Docker\resources\bin`) at script startup
+- Changed `$ErrorActionPreference` to `Continue` to prevent docker progress output being treated as fatal errors
+- Changed docker check to use `Get-Command docker` instead of try/catch exec
+- Replaced Compose V1 `--no-pull` with V2 `--pull=never` / `--pull=missing`
+- Removed `kafka-tools` from infrastructure startup (image not cached, not required for app)
+- Removed obsolete `version: '3.8'` from `docker-compose.yml` (suppresses compose warning)
+- Fixed `$Args` automatic variable warning -- renamed to `$DockerArgs`
+- Verified: full end-to-end run succeeds -- all 11 containers start, health checks pass
+
 ## [2026-05-17] — Gap Closure Guide and Startup Script
 
 ### New Files (project root, not service source)

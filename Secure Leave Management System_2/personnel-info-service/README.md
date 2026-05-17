@@ -1,45 +1,62 @@
 # Personnel Info Service
 
-Manages employee and HR personnel records. Provides CRUD operations for employees, departments, and positions, secured with role-based access control.
+Manages employee and HR personnel records. Provides CRUD operations secured with role-based access control, input validation, and health monitoring.
 
 ## Port
 
-`8081`
+`8084` (host) → `8080` (container — uses Eureka port `0` dynamic assignment internally)
 
 ## Responsibilities
 
-- Store and retrieve employee profiles (name, department, position, status)
-- Expose REST endpoints consumed by UI Service and Leave Request Service
-- Update employee leave status when leave is approved/rejected (consumed via Kafka or direct call)
-- Enforce method-level security via `@PreAuthorize`
+- Store and retrieve employee profiles (name, email, department, position, role, status)
+- Expose REST endpoints consumed by the UI Service via the API Gateway
+- Update employee status when leave is approved or rejected
+- Validate all incoming DTOs with Bean Validation
 
-## REST Endpoints
+## Gateway Route Prefix
+
+All requests routed through: `/personnel-info/**`
+
+## Key Endpoints (via API Gateway at port 8080)
 
 | Method | Path | Role Required | Description |
 |---|---|---|---|
-| GET | `/api/personnel` | EMPLOYEE | List all personnel |
-| GET | `/api/personnel/{id}` | EMPLOYEE | Get one employee |
-| POST | `/api/personnel` | HR_MANAGER, ADMIN | Create employee |
-| PUT | `/api/personnel/{id}` | HR_MANAGER, ADMIN | Update employee |
-| DELETE | `/api/personnel/{id}` | ADMIN | Delete employee |
+| GET | `/personnel-info/...` | Any authenticated | List or retrieve personnel |
+| POST | `/personnel-info/...` | `HR`, `ADMIN` | Create new employee |
+| PUT | `/personnel-info/...` | `HR`, `ADMIN` | Update employee |
+| DELETE | `/personnel-info/...` | `ADMIN` | Remove employee |
 | GET | `/actuator/health` | — | Health check |
 
 ## Database
 
-- **MySQL** (`personnel_db`) in production
-- **H2** in-memory for development/testing
+- **MySQL** — database: `personnel_info_db`, host port: `3308`
+- Connection: `jdbc:mysql://mysql-personnel-info:3306/personnel_info_db` (Docker)
+- Schema managed by Hibernate `ddl-auto=update`
+
+## Input Validation
+
+`CreatePersonnelRequest` enforces:
+- `@NotBlank @Email` on email
+- `@NotBlank @Size(min=2, max=50)` on first name, last name
+- `@Pattern(regexp = "ADMIN|HR|EMPLOYEE")` on role
+- `@NotBlank` on department, position
+
+`UpdatePersonnelStatusRequest` enforces:
+- `@NotBlank @Email` on email
+- `@Pattern(regexp = "ACTIVE|INACTIVE|ON_LEAVE")` on status
 
 ## Key Dependencies
 
 - Spring Data JPA + MySQL Connector
-- Spring Security + Bean Validation
 - Spring Boot Actuator + Micrometer Prometheus
+- Spring Boot Validation (Bean Validation)
 - Netflix Eureka Client
 
-## Running
+## Running Locally
 
 ```powershell
+Set-Location personnel-info-service
 mvn spring-boot:run
 ```
 
-Requires Discovery Server and MySQL (`personnel_db`) to be available.
+Requires Discovery Server and MySQL (`personnel_info_db` on port `3308`) to be available.
