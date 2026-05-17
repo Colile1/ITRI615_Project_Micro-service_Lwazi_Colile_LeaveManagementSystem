@@ -2,7 +2,6 @@ package com.id3.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,7 +44,7 @@ public class JwtService {
         return Jwts.builder().claims(extraClaims).subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+1000L*60*60*24))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
+                .signWith(getSigningKey()).compact();
     }
 
     public <T> T extractClaim(String token, Function<Claims,T> claimResolver){
@@ -54,7 +53,7 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token){
-        return Jwts.parser().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
+        return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY))).build().parseSignedClaims(token).getPayload();
     }
 
     public String extractRole(String token) {

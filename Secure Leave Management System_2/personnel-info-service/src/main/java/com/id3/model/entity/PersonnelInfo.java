@@ -41,7 +41,7 @@ public class PersonnelInfo {
     @Column(name = "manager_id")
     private Integer managerId;
 
-    @OneToMany(mappedBy = "managerId", fetch = FetchType.LAZY)
+    @Transient
     private List<PersonnelInfo> subordinates;
 
     @Column(name = "started_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
