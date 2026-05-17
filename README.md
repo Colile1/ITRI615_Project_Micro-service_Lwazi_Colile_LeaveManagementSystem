@@ -46,7 +46,34 @@ Browser / Client
 - **Thymeleaf** — Server-side UI templating
 - **Docker / Docker Compose / Kubernetes** — Container orchestration
 - **Spring Boot Actuator + Micrometer/Prometheus** — Observability
+---
 
+# Features
+
+## Employee Management
+- Add and remove employees
+- Update employee information
+- Manage departments and positions
+- View personnel records
+
+## Leave Management
+- Create leave requests
+- Approve or reject leave requests
+- Track leave status
+- Manage different leave types
+
+## Notification System
+- Email notifications for leave approvals/rejections
+- Kafka-based asynchronous communication
+- Event-driven processing
+
+## Microservices Infrastructure
+- Service discovery using Eureka
+- API routing using Spring Cloud Gateway
+- Docker containerization
+- Kubernetes deployment support
+
+---
 ## Security Features
 
 - JWT-based stateless authentication with 24-hour token expiry
@@ -89,6 +116,23 @@ docker-compose up -d zookeeper kafka mysql-leave-request mysql-leave-tracking my
 ### Default Credentials
 
 Default credentials are defined in the personnel-info-service seed data. **Do not commit real passwords.** For local development, set credentials via environment variables or a `.env` file that is excluded from version control (see `.gitignore`).
+
+---
+
+# License
+
+This project is licensed under the MIT License.
+
+---
+
+# Author
+
+## Lwazi Junior Nhlapo
+
+Aspiring Data Scientist, Software Developer, and Cloud & AI Engineer from Johannesburg, South Africa.
+
+## Colile 
+---
 
 ## Project Structure
 
