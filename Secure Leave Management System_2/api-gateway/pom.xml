@@ -74,6 +74,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <!-- Actuator: exposes /actuator/health and /actuator/metrics for monitoring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- Micrometer Prometheus: exposes /actuator/prometheus for Prometheus scraping -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
         <!-- Bean Validation (enables @Valid, @NotBlank, @Email on DTOs) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

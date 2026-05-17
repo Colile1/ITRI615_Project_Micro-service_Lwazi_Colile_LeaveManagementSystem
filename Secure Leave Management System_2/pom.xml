@@ -52,10 +52,6 @@
                 <configuration>
                     <from>
                         <image>eclipse-temurin:17.0.4.1_1-jre</image>
-                        <auth>
-                            <username>ramazanakdag</username>
-                            <password>9b8d219d34412</password>
-                        </auth>
                     </from>
                     <to>
                         <image>registry.hub.docker.com/ramazanakdag/${project.artifactId}</image>
