@@ -117,6 +117,23 @@ docker-compose up -d zookeeper kafka mysql-leave-request mysql-leave-tracking my
 
 Default credentials are defined in the personnel-info-service seed data. **Do not commit real passwords.** For local development, set credentials via environment variables or a `.env` file that is excluded from version control (see `.gitignore`).
 
+---
+
+# License
+
+This project is licensed under the MIT License.
+
+---
+
+# Author
+
+## Lwazi Junior Nhlapo
+
+Aspiring Data Scientist, Software Developer, and Cloud & AI Engineer from Johannesburg, South Africa.
+
+## Colile 
+---
+
 ## Project Structure
 
 ```
