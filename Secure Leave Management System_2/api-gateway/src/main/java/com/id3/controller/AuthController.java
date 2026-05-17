@@ -3,6 +3,7 @@ package com.id3.controller;
 import com.id3.model.dto.AuthenticationRequest;
 import com.id3.model.dto.AuthenticationResponse;
 import com.id3.service.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody AuthenticationRequest request
+            @Valid @RequestBody AuthenticationRequest request
     ){
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }

@@ -30,7 +30,8 @@ public class JwtService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("User has no roles"))
                 .getAuthority();
-        claims.put("role", "ROLE_" + role);
+        // role from getAuthority() already includes "ROLE_" prefix from Spring Security
+        claims.put("role", role);
         return generateToken(claims, userDetails);
     }
 
@@ -43,7 +44,7 @@ public class JwtService {
     public String generateToken(Map<String,Object> extraClaims, UserDetails userDetails){
         return Jwts.builder().claims(extraClaims).subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+1000*60*24))
+                .expiration(new Date(System.currentTimeMillis()+1000L*60*60*24))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 
