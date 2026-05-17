@@ -3,6 +3,7 @@ package com.id3.controller;
 
 import com.id3.model.hrPage.CreatePersonnelRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Controller
 @RequestMapping("/ui/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     @Autowired
