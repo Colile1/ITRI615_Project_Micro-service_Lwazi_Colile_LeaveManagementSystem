@@ -130,15 +130,24 @@
     </style>
 </head>
 <body onload="fetchLeaveRequests(); fetchEmployees();">
+
+<header style="background:#2c3e50;color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;">
+  <h1 style="margin:0;font-size:1.2rem;">Secure Leave Management System</h1>
+  <span>Role: <strong>ADMIN</strong> | <a th:href="@{/ui/auth/logout}" style="color:#f39c12;">Logout</a></span>
+</header>
+
+<div th:if="${successMessage}" style="background:#d4edda;color:#155724;padding:10px 20px;margin:10px 20px;border-radius:4px;" th:text="${successMessage}"></div>
+<div th:if="${errorMessage}" style="background:#f8d7da;color:#721c24;padding:10px 20px;margin:10px 20px;border-radius:4px;" th:text="${errorMessage}"></div>
+
 <div class="container">
     <div class="column">
-        <h2>İzin Talepleri</h2>
+        <h2>Leave Request</h2>
         <ul id="leaveRequestsList">
             <!-- Leave requests will be listed here -->
         </ul>
 
         <div class="legend">
-            <h3>Açıklama</h3>
+            <h3>Legend</h3>
             <div class="legend-item"><span style="color: orange;">●</span> Pending</div>
             <div class="legend-item"><span style="color: green;">●</span> Approved</div>
             <div class="legend-item"><span style="color: red;">●</span> Rejected</div>
@@ -147,7 +156,7 @@
     </div>
 
     <div class="column" id="details">
-        <h2>Talep Detayları</h2>
+        <h2>Request Detail</h2>
         <p id="requestDetails">Details will be shown here...</p>
         <button class="button" id="approveButton" onclick="processRequest('accept')">Approve</button>
         <button class="button" id="rejectButton" onclick="processRequest('reject')">Reject</button>
@@ -155,31 +164,31 @@
 </div>
 <div class="container">
     <div class="column">
-        <h2 class="create-form-title">Çalışan Ekle</h2>
+        <h2 class="create-form-title">Add Employee</h2>
 
         <form class="create-form" id="personnelForm" >
             <div class="create-form-item">
-                <label for="firstname" th:text="'Çalışan Ad'"></label>
+                <label for="firstname" th:text="'First Name'"></label>
                 <input type="text" id="firstname" name="firstName">
             </div>
             <div class="create-form-item">
-                <label for="lastname" th:text="'Çalışan soyad'"></label>
+                <label for="lastname" th:text="'Last Name'"></label>
                 <input type="text" id="lastname" name="lastName">
             </div>
             <div class="create-form-item">
-                <label for="email" th:text="'Çalışan Email'"></label>
+                <label for="email" th:text="'Email'"></label>
                 <input type="text" id="email" name="email" >
             </div>
             <div class="create-form-item">
-                <label for="managerMailAddr" th:text="'Yönetici Mail'"></label>
-                <input type="text" id="managerMailAddr" name="managerMailAddr">
+                <label for="managerEmail" th:text="'Manager Email'"></label>
+                <input type="text" id="managerEmail" name="managerEmail">
             </div>
             <div class="create-form-item">
-                <label for="password" th:text="'Çalışan Şifre'"></label>
+                <label for="password" th:text="'Password'"></label>
                 <input type="password" id="password" name="password"/>
             </div>
             <div class="create-form-item">
-                <label for="role" th:text="'Çalışan rol'"></label>
+                <label for="role" th:text="'Role'"></label>
                 <select id="role" name="role">
                     <option value="HR">HR</option>
                     <option value="EMPLOYEE">EMPLOYEE</option>
@@ -187,11 +196,11 @@
                 </select>
             </div>
             <div class="create-form-item">
-                <label for="departmentName" th:text="'Çalışan Departman'"></label>
+                <label for="departmentName" th:text="'Department'"></label>
                 <input type="text" id="departmentName" name="departmentName"/>
             </div>
             <div class="create-form-item">
-                <label for="position" th:text="'Çalışan Pozisyon'"></label>
+                <label for="position" th:text="'Position'"></label>
                 <input type="text" id="position" name="position"/>
             </div>
             <div class="create-form-item">
@@ -201,7 +210,7 @@
 
     </div>
     <div class="column">
-        <h2>Çalışan Hiyerarşisi</h2>
+        <h2>Employee Hierarchy</h2>
         <div id="employeeTree" class="employee-tree">
             <!-- Employee hierarchy will be displayed here -->
         </div>
@@ -209,19 +218,19 @@
 </div>
 <div class="container">
     <div class="column">
-        <h2>Çalışanlar</h2>
-        <input type="text" id="searchBar" class="search-bar" placeholder="Çalışan ara..." onkeyup="searchEmployees()">
+        <h2>Employees</h2>
+        <input type="text" id="searchBar" class="search-bar" placeholder="Search Employee" onkeyup="searchEmployees()">
         <table id="employeeTable">
             <thead>
             <tr>
-                <th>Ad</th>
-                <th>Soyad</th>
+                <th>First Name</th>
+                <th>Last Name</th>
                 <th>Email</th>
-                <th>Rol</th>
-                <th>Departman</th>
-                <th>Pozisyon</th>
-                <th>Durum</th>
-                <th>İşlem</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Position</th>
+                <th>Status</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -232,19 +241,19 @@
 </div>
 <div class="container">
     <div class="column">
-        <h2>İnaktif Çalışanlar</h2>
-        <input type="text" id="inactiveSearchBar" class="search-bar" placeholder="İnaktif çalışan ara..." onkeyup="searchInactiveEmployees()">
+        <h2>İnactive Employees</h2>
+        <input type="text" id="inactiveSearchBar" class="search-bar" placeholder="Search İnactive Employees . . ." onkeyup="searchInactiveEmployees()">
         <table id="inactiveEmployeeTable">
             <thead>
             <tr>
-                <th>Ad</th>
-                <th>Soyad</th>
+                <th>First Name</th>
+                <th>Last Name</th>
                 <th>Email</th>
-                <th>Rol</th>
-                <th>Departman</th>
-                <th>Pozisyon</th>
-                <th>Durum</th>
-                <th>İşlem</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Position</th>
+                <th>Status</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -255,17 +264,17 @@
 </div>
 <div class="container">
     <div class="column">
-        <h2>İzinli Çalışanlar</h2>
+        <h2>Employees with Permissions</h2>
         <table id="leaveEmployeeTable">
             <thead>
             <tr>
-                <th>Ad</th>
-                <th>Soyad</th>
+                <th>First Name</th>
+                <th>Last Name</th>
                 <th>Email</th>
-                <th>Rol</th>
-                <th>Departman</th>
-                <th>Pozisyon</th>
-                <th>Durum</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Position</th>
+                <th>Status</th>
             </tr>
             </thead>
             <tbody>

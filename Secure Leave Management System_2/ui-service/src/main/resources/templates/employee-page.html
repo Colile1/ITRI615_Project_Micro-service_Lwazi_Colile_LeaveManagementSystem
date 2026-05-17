@@ -70,10 +70,19 @@
     </style>
 </head>
 <body onload="fetchRequests(); fetchSubordinateRequests();">
+
+<header style="background:#2c3e50;color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;">
+  <h1 style="margin:0;font-size:1.2rem;">Secure Leave Management System</h1>
+  <span>Role: <strong>EMPLOYEE</strong> | <a th:href="@{/ui/auth/logout}" style="color:#f39c12;">Logout</a></span>
+</header>
+
+<div th:if="${successMessage}" style="background:#d4edda;color:#155724;padding:10px 20px;margin:10px 20px;border-radius:4px;" th:text="${successMessage}"></div>
+<div th:if="${errorMessage}" style="background:#f8d7da;color:#721c24;padding:10px 20px;margin:10px 20px;border-radius:4px;" th:text="${errorMessage}"></div>
+
 <div class="container">
 
     <div class="column">
-        <h2>İzin Talepleri</h2>
+        <h2>Leave Requests</h2>
         <ul id="requestsList">
             <!--requests would be listed here-->
         </ul>
@@ -82,7 +91,7 @@
             <h3>Yeni İzin Talebi Oluştur</h3>
             <input type="date" id="startDate" required>
             <input type="date" id="endDate" required>
-            <textarea id="description" placeholder="Açıklama" required></textarea>
+            <textarea id="description" placeholder="Legend" required></textarea>
             <select id="leaveType">
                 <option value="ANNUAL">Yıllık</option>
                 <option value="SICK">Hastalık</option>
@@ -92,7 +101,7 @@
         </form>
 
         <div class="legend">
-            <h3>Açıklama</h3>
+            <h3>Legend</h3>
             <div class="legend-item"><span style="color: orange;">●</span> Pending</div>
             <div class="legend-item"><span style="color: green;">●</span> Approved</div>
             <div class="legend-item"><span style="color: red;">●</span> Rejected</div>
@@ -109,7 +118,7 @@
 
 <div class="container">
     <div class="column">
-        <h2>Çalışan Yönetici İzin Talepleri</h2>
+        <h2>Çalışan Yönetici Leave Requests</h2>
         <ul id="requestsListManager">
             <!--requests would be listed here-->
         </ul>

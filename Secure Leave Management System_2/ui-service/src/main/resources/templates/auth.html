@@ -68,7 +68,8 @@
             emailErr.classList.remove('visible');
         }
 
-        if (!password.value) {
+        if (!password.value || password.value.length < 6) {
+            passwordErr.textContent = 'Password must be at least 6 characters.';
             passwordErr.classList.add('visible');
             ok = false;
         } else {
