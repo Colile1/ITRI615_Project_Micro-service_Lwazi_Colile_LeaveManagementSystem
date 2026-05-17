@@ -1,17 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Auth</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Secure Leave Management</title>
+    <link rel="stylesheet" th:href="@{/css/glass.css}">
 </head>
-<body>
-<form th:action="@{/ui/auth/login}" method="post" th:object="${loginForm}">
-    <label for="email">Username:</label>
-    <input type="text" id="email" th:field="*{email}" required><br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" th:field="*{password}" required><br>
-    <button type="submit">Login</button>
-</form>
+<body class="glass-page">
+
+<div class="glass-card">
+
+    <!-- Brand -->
+    <div class="glass-brand">
+        <div class="brand-icon">&#128274;</div>
+        <h1>Leave Management</h1>
+        <p>Sign in to your account</p>
+    </div>
+
+    <!-- Tab switcher -->
+    <div class="glass-tabs">
+        <a class="glass-tab active" th:href="@{/ui/auth}">Login</a>
+        <a class="glass-tab" th:href="@{/ui/auth/signup}">Sign Up</a>
+    </div>
+
+    <!-- Server-side error -->
+    <div class="glass-alert error" th:if="${error}" th:text="${error}"></div>
+
+    <!-- Login form -->
+    <form th:action="@{/ui/auth/login}" method="post" th:object="${loginForm}" id="loginForm" novalidate>
+
+        <div class="glass-field">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" th:field="*{email}"
+                   placeholder="you@company.com" autocomplete="email" required>
+            <span class="field-error" id="emailErr">Please enter a valid email.</span>
+        </div>
+
+        <div class="glass-field">
+            <label for="password">Password</label>
+            <input type="password" id="password" th:field="*{password}"
+                   placeholder="Your password" autocomplete="current-password" required>
+            <span class="field-error" id="passwordErr">Password is required.</span>
+        </div>
+
+        <button type="submit" class="glass-btn">Sign In</button>
+
+    </form>
+
+    <div class="glass-footer">
+        Don't have an account? <a th:href="@{/ui/auth/signup}">Create one</a>
+    </div>
+
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        var ok = true;
+        var email = document.getElementById('email');
+        var emailErr = document.getElementById('emailErr');
+        var password = document.getElementById('password');
+        var passwordErr = document.getElementById('passwordErr');
+
+        if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+            emailErr.classList.add('visible');
+            ok = false;
+        } else {
+            emailErr.classList.remove('visible');
+        }
+
+        if (!password.value) {
+            passwordErr.classList.add('visible');
+            ok = false;
+        } else {
+            passwordErr.classList.remove('visible');
+        }
+
+        if (!ok) e.preventDefault();
+    });
+</script>
 
 </body>
 </html>

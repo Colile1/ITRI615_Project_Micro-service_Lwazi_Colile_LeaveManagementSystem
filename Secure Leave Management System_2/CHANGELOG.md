@@ -1,5 +1,22 @@
 # CHANGELOG — Secure Leave Management System
 
+## [2026-05-17] — Signup Feature and Glassmorphism UI Theme
+
+### New Features
+- **Self-registration:** Employees can now create their own accounts via a signup form. New accounts are always created with `Role.EMPLOYEE` and `Status.ACTIVE`. A JWT is issued immediately on successful registration, logging the user in without a separate step.
+
+### New Files
+- **[api-gateway] `model/dto/RegisterRequest.java`** — Expanded from 3 fields to 6 (`firstName`, `lastName`, `email`, `password`, `departmentName`, `position`) with Bean Validation annotations (`@NotBlank`, `@Email`, `@Size`).
+- **[ui-service] `model/authPage/SignupForm.java`** — Thymeleaf form-backing object with all 7 fields including `confirmPassword` for client-side mismatch detection.
+- **[ui-service] `static/css/glass.css`** — Shared glassmorphism stylesheet for all auth pages. Features: deep blue radial-gradient background, animated floating orb pseudo-elements (`drift` keyframe), frosted glass card (`backdrop-filter: blur(24px)`), blue-glow inputs with focus ring, gradient submit button with hover lift, tab switcher, strength bar, field-error spans, two-column grid helper.
+- **[ui-service] `templates/signup.html`** — Full signup page using the glass theme: name/department/position in two-column grid, password strength bar, client-side validation with per-field error messages, server-side error display.
+
+### Modified Files
+- **[api-gateway] `service/AuthenticationService.java`** — Added `register()` method: checks email uniqueness (throws `IllegalArgumentException` → HTTP 409 on duplicate), BCrypt-hashes password, saves `PersonnelInfo`, returns JWT + userId + role.
+- **[api-gateway] `controller/AuthController.java`** — Added `POST /auth/register` endpoint; `/auth/**` is already in the SecurityConfig permit-all list so no auth required.
+- **[ui-service] `controller/AuthController.java`** — Added `GET /ui/auth/signup` and `POST /ui/auth/signup`. Server-side password-match check before calling gateway. Sets JWT as HttpOnly cookie on success and redirects to `/ui/employee/{userId}`. Handles HTTP 409 conflict with user-friendly "email already registered" message.
+- **[ui-service] `templates/auth.html`** — Fully redesigned with glassmorphism glass theme: glass card, tab switcher (Login/Sign Up), email + password fields with focus glow, client-side validation, error alert, footer link to signup.
+
 ## [2026-05-17] — README Accuracy Pass and Security Fix
 
 ### Security Fix

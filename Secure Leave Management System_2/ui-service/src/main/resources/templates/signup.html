@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up — Secure Leave Management</title>
+    <link rel="stylesheet" th:href="@{/css/glass.css}">
+    <style>
+        /* Wider card for signup */
+        .glass-card { max-width: 520px; }
+    </style>
+</head>
+<body class="glass-page">
+
+<div class="glass-card">
+
+    <!-- Brand -->
+    <div class="glass-brand">
+        <div class="brand-icon">&#128274;</div>
+        <h1>Leave Management</h1>
+        <p>Create your employee account</p>
+    </div>
+
+    <!-- Tab switcher -->
+    <div class="glass-tabs">
+        <a class="glass-tab" th:href="@{/ui/auth}">Login</a>
+        <a class="glass-tab active" th:href="@{/ui/auth/signup}">Sign Up</a>
+    </div>
+
+    <!-- Server-side error / success -->
+    <div class="glass-alert error" th:if="${error}" th:text="${error}"></div>
+
+    <!-- Signup form -->
+    <form th:action="@{/ui/auth/signup}" method="post" th:object="${signupForm}" id="signupForm" novalidate>
+
+        <!-- Name row -->
+        <div class="glass-grid-2">
+            <div class="glass-field">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" th:field="*{firstName}"
+                       placeholder="Jane" autocomplete="given-name" required>
+                <span class="field-error" id="firstNameErr">Min 2 characters.</span>
+            </div>
+            <div class="glass-field">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" th:field="*{lastName}"
+                       placeholder="Doe" autocomplete="family-name" required>
+                <span class="field-error" id="lastNameErr">Min 2 characters.</span>
+            </div>
+        </div>
+
+        <div class="glass-field">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" th:field="*{email}"
+                   placeholder="you@company.com" autocomplete="email" required>
+            <span class="field-error" id="emailErr">Please enter a valid email.</span>
+        </div>
+
+        <!-- Department / Position row -->
+        <div class="glass-grid-2">
+            <div class="glass-field">
+                <label for="departmentName">Department</label>
+                <input type="text" id="departmentName" th:field="*{departmentName}"
+                       placeholder="Engineering" required>
+                <span class="field-error" id="departmentErr">Required.</span>
+            </div>
+            <div class="glass-field">
+                <label for="position">Position</label>
+                <input type="text" id="position" th:field="*{position}"
+                       placeholder="Software Engineer" required>
+                <span class="field-error" id="positionErr">Required.</span>
+            </div>
+        </div>
+
+        <div class="glass-field">
+            <label for="password">Password</label>
+            <input type="password" id="password" th:field="*{password}"
+                   placeholder="At least 6 characters" autocomplete="new-password"
+                   required minlength="6">
+            <div class="strength-bar"><div class="strength-bar-fill" id="strengthFill"></div></div>
+            <span class="field-error" id="passwordErr">Min 6 characters.</span>
+        </div>
+
+        <div class="glass-field">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
+                   placeholder="Repeat your password" autocomplete="new-password" required>
+            <span class="field-error" id="confirmErr">Passwords do not match.</span>
+        </div>
+
+        <button type="submit" class="glass-btn">Create Account</button>
+
+    </form>
+
+    <div class="glass-footer">
+        Already have an account? <a th:href="@{/ui/auth}">Sign in</a>
+    </div>
+
+</div>
+
+<script>
+    /* Password strength bar */
+    document.getElementById('password').addEventListener('input', function() {
+        var val = this.value;
+        var fill = document.getElementById('strengthFill');
+        var score = 0;
+        if (val.length >= 6)  score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+        var colors = ['#ff5a5a', '#ffaa00', '#38b6ff', '#3cdc8c'];
+        var widths = ['25%', '50%', '75%', '100%'];
+        if (val.length === 0) { fill.style.width = '0'; return; }
+        fill.style.width  = widths[score - 1] || '10%';
+        fill.style.background = colors[score - 1] || '#ff5a5a';
+    });
+
+    /* Client-side validation */
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        var ok = true;
+
+        function validate(id, errId, test) {
+            var el = document.getElementById(id);
+            var err = document.getElementById(errId);
+            if (!test(el.value)) { err.classList.add('visible'); ok = false; }
+            else { err.classList.remove('visible'); }
+        }
+
+        validate('firstName',      'firstNameErr',  function(v){ return v.trim().length >= 2; });
+        validate('lastName',       'lastNameErr',   function(v){ return v.trim().length >= 2; });
+        validate('email',          'emailErr',      function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); });
+        validate('departmentName', 'departmentErr', function(v){ return v.trim().length >= 2; });
+        validate('position',       'positionErr',   function(v){ return v.trim().length >= 2; });
+        validate('password',       'passwordErr',   function(v){ return v.length >= 6; });
+
+        var pw = document.getElementById('password').value;
+        var cpw = document.getElementById('confirmPassword').value;
+        var confirmErr = document.getElementById('confirmErr');
+        if (pw !== cpw) { confirmErr.classList.add('visible'); ok = false; }
+        else { confirmErr.classList.remove('visible'); }
+
+        if (!ok) e.preventDefault();
+    });
+</script>
+
+</body>
+</html>

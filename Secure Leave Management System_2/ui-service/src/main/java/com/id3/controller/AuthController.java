@@ -2,6 +2,7 @@ package com.id3.controller;
 
 import com.id3.model.authPage.AuthResponse;
 import com.id3.model.authPage.LoginForm;
+import com.id3.model.authPage.SignupForm;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
@@ -30,9 +32,66 @@ public class AuthController {
 
 
     @GetMapping
-    public String getAuthPage(Model model){
+    public String getAuthPage(Model model) {
         model.addAttribute("loginForm", new LoginForm());
         return "auth";
+    }
+
+    @GetMapping("/signup")
+    public String getSignupPage(Model model) {
+        model.addAttribute("signupForm", new SignupForm());
+        return "signup";
+    }
+
+    @PostMapping("/signup")
+    public String signup(@ModelAttribute SignupForm signupForm, Model model, HttpServletResponse response) {
+        if (!signupForm.getPassword().equals(signupForm.getConfirmPassword())) {
+            model.addAttribute("signupForm", signupForm);
+            model.addAttribute("error", "Passwords do not match.");
+            return "signup";
+        }
+
+        String url = gatewayUrl + "/auth/register";
+
+        // Build payload matching the gateway's RegisterRequest
+        java.util.Map<String, String> payload = new java.util.HashMap<>();
+        payload.put("firstName", signupForm.getFirstName());
+        payload.put("lastName", signupForm.getLastName());
+        payload.put("email", signupForm.getEmail());
+        payload.put("password", signupForm.getPassword());
+        payload.put("departmentName", signupForm.getDepartmentName());
+        payload.put("position", signupForm.getPosition());
+
+        try {
+            HttpEntity<java.util.Map<String, String>> request = new HttpEntity<>(payload);
+            ResponseEntity<AuthResponse> responseEntity =
+                    restTemplate.exchange(url, HttpMethod.POST, request, AuthResponse.class);
+
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                AuthResponse authResponse = responseEntity.getBody();
+                assert authResponse != null;
+
+                Cookie cookie = new Cookie("token", authResponse.getToken());
+                cookie.setHttpOnly(true);
+                cookie.setMaxAge(86400);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+
+                return "redirect:/ui/employee/" + authResponse.getUserId();
+            }
+        } catch (HttpClientErrorException.Conflict e) {
+            model.addAttribute("signupForm", signupForm);
+            model.addAttribute("error", "That email address is already registered. Please log in.");
+            return "signup";
+        } catch (Exception e) {
+            model.addAttribute("signupForm", signupForm);
+            model.addAttribute("error", "Registration failed: " + e.getMessage());
+            return "signup";
+        }
+
+        model.addAttribute("signupForm", signupForm);
+        model.addAttribute("error", "Registration failed. Please try again.");
+        return "signup";
     }
 
     @PostMapping("/login")
