@@ -38,7 +38,7 @@ Manages employee and HR personnel records. Provides CRUD operations for employee
 
 ## Running
 
-```bash
+```powershell
 mvn spring-boot:run
 ```
 

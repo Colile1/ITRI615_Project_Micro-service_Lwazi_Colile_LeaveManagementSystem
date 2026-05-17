@@ -27,7 +27,7 @@ Available at `http://localhost:8761` when running locally. Shows all registered 
 
 ## Running
 
-```bash
+```powershell
 mvn spring-boot:run
 ```
 

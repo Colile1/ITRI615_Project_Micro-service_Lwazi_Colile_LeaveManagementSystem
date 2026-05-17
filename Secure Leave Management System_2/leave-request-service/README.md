@@ -50,7 +50,7 @@ Published to topic `leave-requests`:
 
 ## Running
 
-```bash
+```powershell
 mvn spring-boot:run
 ```
 

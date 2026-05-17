@@ -38,7 +38,7 @@ Request → RateLimitFilter → JwtAuthFilter → Route to service
 
 ## Running
 
-```bash
+```powershell
 mvn spring-boot:run
 ```
 

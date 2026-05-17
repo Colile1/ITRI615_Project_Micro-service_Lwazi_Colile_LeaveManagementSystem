@@ -66,8 +66,8 @@ Browser / Client
 
 ### Run with Docker Compose
 
-```bash
-cd "Secure Leave Management System_2"
+```powershell
+Set-Location "Secure Leave Management System_2"
 docker-compose up -d
 ```
 
@@ -75,7 +75,7 @@ This starts Zookeeper, Kafka, two MySQL instances, and all seven services.
 
 ### Run Individually (development)
 
-```bash
+```powershell
 # Start infrastructure first
 docker-compose up -d zookeeper kafka mysql-leave-request mysql-leave-tracking mysql-personnel
 

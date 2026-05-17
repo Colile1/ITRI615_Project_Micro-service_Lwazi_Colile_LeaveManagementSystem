@@ -38,7 +38,7 @@ Jobs are configured in `application.yml` and run on a defined cron expression to
 
 ## Running
 
-```bash
+```powershell
 mvn spring-boot:run
 ```
 

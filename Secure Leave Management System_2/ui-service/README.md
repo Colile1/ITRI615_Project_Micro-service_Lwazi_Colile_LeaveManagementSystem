@@ -46,7 +46,7 @@ src/main/resources/
 
 ## Running
 
-```bash
+```powershell
 mvn spring-boot:run
 ```
 

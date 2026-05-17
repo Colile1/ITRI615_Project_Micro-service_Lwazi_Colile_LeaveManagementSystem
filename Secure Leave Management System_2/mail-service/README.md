@@ -52,7 +52,7 @@ Set `MAIL_USERNAME` and `MAIL_PASSWORD` as environment variables or in a `.env` 
 
 ## Running
 
-```bash
+```powershell
 mvn spring-boot:run
 ```
 
